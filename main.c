@@ -197,6 +197,9 @@ int main() {
         ssd1306_send_data(&ssd);
         printf("Resposta: %d\n", current_number);
 
+        //TODO melhorar feedback no serial mode
+
+
         new_expression = check_answer(current_number, result, valor_led, pio, sm);
         ssd1306_fill(&ssd, 0);
       }
@@ -413,6 +416,8 @@ void change_index( uint16_t vrx_value, bool *index, uint16_t vrx_calibration)
     // Joystick voltou ao centro
     vry_moved = false;
   }
+
+  //TODO Sinal sonoro ao modficar o index e ao selecionar o item
 
   // Atualize os valores anteriores do joystick
   prev_vrx_value = vrx_value;
