@@ -3,7 +3,6 @@
 #include <time.h>
 #include "pico/stdlib.h"      
 #include "hardware/adc.h"     
-#include "hardware/pwm.h"     
 #include "hardware/pio.h"
 #include "hardware/i2c.h"
 #include "hardware/clocks.h"
@@ -15,17 +14,18 @@
 
 // Definições do display OLED
 #define I2C_PORT i2c1
+#define endereco 0x3C
 #define I2C_SDA 14
 #define I2C_SCL 15
-#define endereco 0x3C
 
-// Definições de pinos do joystick, botões e LEDs
+// Definições de pinos do joystick, botões, buzzer e LEDs
 #define VRY_PIN 26  
 #define VRX_PIN 27
 #define SW_PIN 22
+
 #define LED_PIN_RED 13
 #define LED_PIN_GREEN 11
-#define LED_PIN_BLUE 12
+
 #define PIN_BUTTON_A 5
 #define PIN_BUTTON_B 6
 #define BUZZER_PIN 21
@@ -50,7 +50,6 @@ bool vrx_moved = false;
 bool vry_moved = false;
 
 static void gpio_irq_handler(uint gpio, uint32_t events);
-uint pwm_init_gpio(uint gpio, uint wrap);
 void play_note(int buzzer, int frequency, int duration);
 void play_melody(Note *melody, int buzzer);
 void create_expression(char *expression, int *result);
@@ -75,7 +74,6 @@ int main() {
   gpio_init(PIN_BUTTON_A);
   gpio_init(PIN_BUTTON_B);
   gpio_init(LED_PIN_GREEN);
-  gpio_init(LED_PIN_BLUE);
   gpio_init(LED_PIN_RED);
   gpio_init(BUZZER_PIN);
 
@@ -85,7 +83,6 @@ int main() {
   gpio_set_dir(SW_PIN, GPIO_IN);
   gpio_set_dir(BUZZER_PIN, GPIO_OUT);
   gpio_set_dir(LED_PIN_GREEN, GPIO_OUT);
-  gpio_set_dir(LED_PIN_BLUE, GPIO_OUT);
   gpio_set_dir(LED_PIN_RED, GPIO_OUT);
   gpio_pull_up(PIN_BUTTON_A);
   gpio_pull_up(PIN_BUTTON_B);
@@ -235,39 +232,8 @@ int main() {
       }
     }
 
-    //SerialMonitorMode
-    // while (true)
-    // {
-    //   char input[30]; 
-    //   printf("Digite um número: ");
-    //   scanf("%s", input);
-    //   int answer  = atoi(input);
-    //   printf("Resposta: %d\n", answer);
-  
-    //   if (answer == result)
-    //   {
-    //     correct_answer(valor_led, pio, sm);
-    //     break;
-    //   }
-    //   else
-    //   {
-    //     incorrect_answer(valor_led, pio, sm);
-    //   }
-    // }
-    
     sleep_ms(100);
   };  
-}
-
-// Inicializa o PWM para um pino GPIO específico
-uint pwm_init_gpio(uint gpio, uint wrap) {
-  gpio_set_function(gpio, GPIO_FUNC_PWM);
-
-  uint slice_num = pwm_gpio_to_slice_num(gpio);
-  pwm_set_wrap(slice_num, wrap);
-    
-  pwm_set_enabled(slice_num, true);  
-  return slice_num;  
 }
 
 void play_note(int buzzer, int frequency, int duration) {
@@ -309,7 +275,6 @@ static void gpio_irq_handler(uint gpio, uint32_t events)
     last_interrupt_time = current_time;
   }
 
-  // Ativa ou desativa a funcionalidade do LED com PWM quando o botão A é pressionado
     if(gpio == PIN_BUTTON_B)
     {
       is_on = !is_on;
