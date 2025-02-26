@@ -59,7 +59,7 @@ void pio_drawn(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r, 
 void correct_answer(uint32_t valor_led, PIO pio, uint sm);
 void incorrect_answer(uint32_t valor_led, PIO pio, uint sm);
 bool check_answer(int current_number, int result, uint32_t valor_led, PIO pio, uint sm);
-void change_index( uint16_t vrx_value, bool *index, uint16_t vrx_calibration);
+void select_mode( uint16_t vrx_value, bool *index, uint16_t vrx_calibration);
 
 int main() { 
   
@@ -163,7 +163,7 @@ int main() {
     ssd1306_send_data(&ssd);
 
     // Sistema para selecionar o serial mode ou normal mode
-    change_index(vrx_value, &is_serial_mode, vrx_calibration);
+    select_mode(vrx_value, &is_serial_mode, vrx_calibration);
     while (is_on)
     {
       bool new_expression = false;
@@ -360,7 +360,7 @@ void change_number(uint16_t vry_value, uint16_t vrx_value, int *number, uint16_t
     prev_vry_value = vry_value;
 }
 
-void change_index( uint16_t vrx_value, bool *index, uint16_t vrx_calibration)
+void select_mode( uint16_t vrx_value, bool *index, uint16_t vrx_calibration)
 {
   // Defina os limites de sensibilidade do joystick
   const uint16_t threshold = 1000;
