@@ -316,7 +316,7 @@ static void gpio_irq_handler(uint gpio, uint32_t events)
 void create_expression(char *expression, int *result)
 {
   // Gera dois números aleatórios entre 1 e 100
-  int op = rand() % 2;
+  int op = rand() % 2; // Gera um número aleatório entre 0 e 1 para a representação da operação
   int num1 = rand() % 100 + 1;
   int num2 = rand() % 100 + 1;
   if (op == 0)
